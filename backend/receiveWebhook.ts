@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda"
-import { randomUUID } from "node:crypto"
+import { randomUUID } from "crypto"
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import {
   DynamoDBDocumentClient,
@@ -16,6 +16,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     if (!webhookId) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           success: false,
           message: "webhookId is required",
@@ -24,21 +27,25 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     }
 
     const receivedAt = new Date().toISOString()
+
+    // Each request gets a unique event ID so multiple requests
+    // can be stored against the same webhook inbox.
     const eventId = `${receivedAt}#${randomUUID()}`
-    const expiresAt = Math.floor(Date.now() / 1000) + 60 * 60 * 24
+
+    // DynamoDB TTL uses Unix time in seconds.
+    // Events will expire after 24 hours.
+    const expiresAt =
+      Math.floor(Date.now() / 1000) + 60 * 60 * 24
 
     const item = {
       webhookId,
       eventId,
       receivedAt,
       expiresAt,
-
       method: event.requestContext.http.method,
       path: event.rawPath,
-
       headers: event.headers ?? {},
       queryParameters: event.queryStringParameters ?? {},
-
       body: event.body ?? null,
       isBase64Encoded: event.isBase64Encoded ?? false,
     }
@@ -57,6 +64,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       },
       body: JSON.stringify({
         success: true,
+        message: "Webhook received",
         webhookId,
         eventId,
       }),

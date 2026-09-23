@@ -50,26 +50,36 @@ export default async function InspectorPage({
     `${process.env.WEBHOOK_API_URL}/webhooks/${webhookId}`
 
   return (
-    <main className="mx-auto max-w-6xl p-8">
-      <h1 className="text-3xl font-bold">
-        Webhook Inspector
-      </h1>
+    <main className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-6xl px-6 py-8">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+            Webhook inspector
+          </h1>
 
-      <p className="mt-2 text-gray-500">
-        Inspect incoming webhook requests.
-      </p>
+          <p className="mt-1 text-sm text-gray-500">
+            Inspect requests sent to your temporary webhook endpoint.
+          </p>
+        </div>
 
-      <div className="mt-8 rounded-lg border border-gray-300 p-4">
-        <p className="text-sm font-semibold">
-          Your webhook URL
-        </p>
+        <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold text-gray-900">
+            Webhook URL
+          </p>
 
-        <code className="mt-2 block break-all rounded bg-gray-100 p-3 text-sm text-gray-900">
-          {webhookUrl}
-        </code>
+          <p className="mt-1 text-sm text-gray-500">
+            Send HTTP requests to this endpoint to inspect them below.
+          </p>
+
+          <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+            <code className="break-all text-sm text-gray-800">
+              {webhookUrl}
+            </code>
+          </div>
+        </section>
+
+        <WebhookInspector events={events} />
       </div>
-
-      <WebhookInspector events={events} />
     </main>
   )
 }

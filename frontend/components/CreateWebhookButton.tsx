@@ -7,7 +7,6 @@ export default function CreateWebhookButton() {
 
   function createWebhook() {
     const webhookId = crypto.randomUUID()
-
     router.push(`/inspect/${webhookId}`)
   }
 
@@ -15,9 +14,9 @@ export default function CreateWebhookButton() {
     <button
       type="button"
       onClick={createWebhook}
-      className="mt-8 rounded-lg bg-black px-5 py-3 font-medium text-white hover:bg-gray-800"
+      className="mt-8 rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-800"
     >
-      Create Webhook
+      Create webhook
     </button>
   )
 }
