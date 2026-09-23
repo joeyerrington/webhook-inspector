@@ -17,15 +17,25 @@ async function getWebhooks(
   webhookId: string
 ): Promise<WebhookEvent[]> {
   const apiUrl = process.env.WEBHOOK_API_URL
+  const apiSecret = process.env.INSPECTOR_API_SECRET
 
   if (!apiUrl) {
     throw new Error("WEBHOOK_API_URL is not configured")
+  }
+
+  if (!apiSecret) {
+    throw new Error(
+      "INSPECTOR_API_SECRET is not configured"
+    )
   }
 
   const response = await fetch(
     `${apiUrl}/webhooks/${webhookId}`,
     {
       cache: "no-store",
+      headers: {
+        "X-Inspector-Secret": apiSecret,
+      },
     }
   )
 

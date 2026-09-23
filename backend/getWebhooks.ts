@@ -10,6 +10,29 @@ const dynamodb = DynamoDBDocumentClient.from(client)
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   try {
+    // Check that the request contains the correct internal API secret.
+    const providedSecret =
+      event.headers["x-inspector-secret"]
+
+    const expectedSecret =
+      process.env.INSPECTOR_API_SECRET
+
+    if (
+      !expectedSecret ||
+      providedSecret !== expectedSecret
+    ) {
+      return {
+        statusCode: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          success: false,
+          message: "Unauthorized",
+        }),
+      }
+    }
+
     const webhookId = event.pathParameters?.webhookId
 
     if (!webhookId) {
