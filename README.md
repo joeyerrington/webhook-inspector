@@ -33,7 +33,6 @@ AWS services:
 - API Gateway HTTP API
 - Two Lambda functions
 - DynamoDB for temporary event storage
-- Route 53 and ACM for custom domains and TLS
 
 ## AWS setup
 
